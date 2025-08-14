@@ -25,3 +25,17 @@ class GraphBuilder():
 
         if usecase=="BasicChatbot":
             self.basic_chatbot_build_graph()
+
+            
+if __name__ == "__main__":
+    import sys
+    from src.Langraph_agentic_ai.llms.groqllm import GroqLLM
+    # Example user_controls_input, replace with actual input as needed
+    user_controls_input = {
+        "Groq_API_Key": "YOUR_GROQ_API_KEY",
+        "selected_model": "qwen/qwen3-32b"
+    }
+    model = GroqLLM(user_controls_input).get_llm_model()
+    graph_builder = GraphBuilder(model)
+    graph_builder.setup_graph("BasicChatbot")
+    print("Graph has been built successfully.")
