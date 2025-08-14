@@ -15,16 +15,16 @@ class GraphBuilder():
         and integrate it with the overall graph.the caht bot node is set both the entry and exit pointt
         """
         self.basic_chatbot_node = BasicChatbotNode(self.llm)
-        self.graph_builder.add_node("ChatbotNode", self.basic_chatbot_node.p)
+        self.graph_builder.add_node("ChatbotNode", self.basic_chatbot_node.process)
         self.graph_builder.add_edge(START, "ChatbotNode")
         self.graph_builder.add_edge("ChatbotNode", END)
         
         
-    def setup_graph(self,usecase:str):
-        """sets the graph bsed on the use case"""
-
-        if usecase=="BasicChatbot":
+    def setup_graph(self, usecase: str):
+        """sets the graph based on the use case"""
+        if usecase.strip().lower() == "basic chatbot":
             self.basic_chatbot_build_graph()
+        return self.graph_builder.compile()
 
             
 if __name__ == "__main__":

@@ -14,8 +14,8 @@ class DisplayResultStreamlit:
         graph = self.graph
         user_message = self.user_message
 
-        if usecase == "BasicChatbot":
-            for event in graph.stream({"messages":("User",user_message)}):
+        if usecase.strip().lower() == "basic chatbot":
+            for event in graph.stream({"messages": ("user", user_message)}):
                 print(event.values())
                 for value in event.values():
                     print(value['messages'])
