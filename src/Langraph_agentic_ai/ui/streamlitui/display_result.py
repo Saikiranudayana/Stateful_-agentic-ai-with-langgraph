@@ -23,3 +23,33 @@ class DisplayResultStreamlit:
                         st.write(user_message)
                     with st.chat_message("assistant"):
                         st.write(value['messages'].content)
+                        
+        elif usecase.strip().lower() == "chatbot with web":
+            initial_state = {"messages": [user_message]}
+            try:
+                res = graph.invoke(initial_state)
+                # Debug output for the full result
+                st.info(f"Raw result: {res}")
+                if not res or "messages" not in res:
+                    st.error("No messages returned from the graph. Check graph logic and node outputs.")
+                    return
+                for message in res["messages"]:
+                    if type(message) == HumanMessage:
+                        with st.chat_message("user"):
+                            st.write(user_message)
+                    elif type(message) == ToolMessage:
+                        with st.chat_message("tool"):
+                            st.write("Tool call started")
+                            st.write(message.content)
+                            st.write("Tool call ended")
+                    elif type(message) == AIMessage:
+                        with st.chat_message("assistant"):
+                            st.write(message.content)
+                    else:
+                        st.warning(f"Unknown message type: {type(message)}. Message: {message}")
+            except Exception as e:
+                st.error(f"Exception during graph invocation: {e}")
+                import traceback
+                st.text(traceback.format_exc())
+
+

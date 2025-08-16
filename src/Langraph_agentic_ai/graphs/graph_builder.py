@@ -3,6 +3,7 @@ from src.Langraph_agentic_ai.state.state import State
 from src.Langraph_agentic_ai.Nodes.basicchatbot_node import BasicChatbotNode
 from src.Langraph_agentic_ai.tools.search_tool import get_tools, create_tool_node
 from langgraph.prebuilt import ToolNode,tools_condition
+from src.Langraph_agentic_ai.Nodes.chat_bot_with_tools import ChatbotWithToolsNode
 
 class GraphBuilder():
     def __init__(self,model):
@@ -35,14 +36,16 @@ class GraphBuilder():
         llm= self.llm
         
         ## define the chatbot node
-        
-        
+        obj_chatbot_with_node= ChatbotWithToolsNode(llm)
+        chatbot_node= obj_chatbot_with_node.create_chatbot(tools)
+
         ## add nodes
-        self.graph_builder.add_node("Chatbot","")
+        self.graph_builder.add_node("Chatbot", chatbot_node)
         self.graph_builder.add_node("ToolNode", tool_node)
         
         self.graph_builder.add_edge(START, "Chatbot")
-        self.graph_builder.add_conditional_edges("Chatbot",tools_condition)
+        from langgraph.graph import END
+        self.graph_builder.add_conditional_edges("Chatbot", tools_condition, {"tools": "ToolNode", "__end__": END})
         self.graph_builder.add_edge("ToolNode", "Chatbot")
         self.graph_builder.add_edge("Chatbot", END)
 
@@ -50,7 +53,7 @@ class GraphBuilder():
         """sets the graph based on the use case"""
         if usecase.strip().lower() == "basic chatbot":
             self.basic_chatbot_build_graph()
-        if usecase.strip().lower() == "Chatbot with Web":
+        if usecase.strip().lower() == "chatbot with web":
             self.chatbot_with_tools_build_graph()
         return self.graph_builder.compile()
 
