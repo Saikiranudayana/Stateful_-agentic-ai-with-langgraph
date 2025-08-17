@@ -56,8 +56,20 @@ class GraphBuilder():
         if usecase.strip().lower() == "chatbot with web":
             self.chatbot_with_tools_build_graph()
         return self.graph_builder.compile()
+    
+    
+    def ai_news_builder(self):
+        ## added the nodes
+        self.graph_builder.add_node("fetch_news", "")
+        self.graph_builder.add_node("summarize_news", "")
+        self.graph_builder.add_node("save_result","")
+        
+        ## connected the node with the edges 
+        self.graph_builder.set_entry_point("fetch_news")
+        self.graph_builder.add_edge("fetch_news", "summarize_news")
+        self.graph_builder.add_edge("summarize_news", "save_result")
+        self.graph_builder.add_edge("save_result", END)
 
-            
 if __name__ == "__main__":
     import sys
     from src.Langraph_agentic_ai.llms.groqllm import GroqLLM
