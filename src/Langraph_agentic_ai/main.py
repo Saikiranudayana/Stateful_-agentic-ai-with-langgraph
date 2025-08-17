@@ -16,11 +16,13 @@ def load_langraph_agentic_ai_app():
     ui = LoadStreamlitUI()
     user_controls = ui.load_ui()
     if not user_controls:
-        st.error("Erro : failed ot load the input from the ui")
+        st.error("Error: failed to load the input from the ui")
         return
-    
-    user_message= st.chat_input("Enter your message: ")
-    
+    if st.session_state.IsFetchButtonClicked:
+        user_message= st.session_state.timeframe
+    else:
+        user_message= st.chat_input("Enter your message: ")
+
     if user_message:
         try:
             obj_llm_config = GroqLLM(user_controls_input=user_controls)

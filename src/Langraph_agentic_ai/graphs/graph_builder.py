@@ -4,7 +4,7 @@ from src.Langraph_agentic_ai.Nodes.basicchatbot_node import BasicChatbotNode
 from src.Langraph_agentic_ai.tools.search_tool import get_tools, create_tool_node
 from langgraph.prebuilt import ToolNode,tools_condition
 from src.Langraph_agentic_ai.Nodes.chat_bot_with_tools import ChatbotWithToolsNode
-
+from src.Langraph_agentic_ai.Nodes.ai_new_node import AINewsNode    
 class GraphBuilder():
     def __init__(self,model):
         self.llm= model
@@ -55,15 +55,18 @@ class GraphBuilder():
             self.basic_chatbot_build_graph()
         if usecase.strip().lower() == "chatbot with web":
             self.chatbot_with_tools_build_graph()
+        if usecase.strip().lower() == "ai news":
+            self.ai_news_builder()
         return self.graph_builder.compile()
     
     
     def ai_news_builder(self):
+        ai_news_node = AINewsNode(self.llm)
         ## added the nodes
-        self.graph_builder.add_node("fetch_news", "")
-        self.graph_builder.add_node("summarize_news", "")
-        self.graph_builder.add_node("save_result","")
-        
+        self.graph_builder.add_node("fetch_news", ai_news_node.fetch_news)
+        self.graph_builder.add_node("summarize_news", ai_news_node.summarize_news)
+        self.graph_builder.add_node("save_result", ai_news_node.save_results)
+
         ## connected the node with the edges 
         self.graph_builder.set_entry_point("fetch_news")
         self.graph_builder.add_edge("fetch_news", "summarize_news")

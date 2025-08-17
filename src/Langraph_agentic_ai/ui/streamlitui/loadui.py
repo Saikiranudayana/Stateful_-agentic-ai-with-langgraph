@@ -15,6 +15,8 @@ class LoadStreamlitUI:
 
         # Display the title
         st.header("🤖"+self.config.get_page_title())
+        st.session_state["IsFetchButtonClicked"] = False
+        st.session_state.timeframe=''
         
         with st.sidebar:
             llm_options = self.config.get_llm_options()
@@ -49,6 +51,7 @@ class LoadStreamlitUI:
                         index= 0    
                     )       
                 if st.button("Fetch AI News",use_container_width=True):
+                    st.session_state.IsFetchButtonClicked = True
                     st.session_state.timeframe = time_frame
                 
         return self.user_controls 
